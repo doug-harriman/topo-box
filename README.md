@@ -15,6 +15,15 @@ Small boxes with lids that are topographic reliefs.
   * [DEMto3D](https://plugins.qgis.org/plugins/DEMto3D/) plugin for QGIS.
   * [SimpleSVG](https://plugins.qgis.org/plugins/simplesvg/) plugin for QGIS.
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/)
+* [HeightMapper](https://tangrams.github.io/heightmapper) Grayscale Image
+  * Topo conversion process notes
+    * [Load image into Python](https://matplotlib.org/stable/tutorials/introductory/images.html)
+    * Since it's grayscale, RGB color channels are the same.  Convert to a Z height matrix by extracting red channel: z = image[:,:,0]  
+    * Create a contour plot: ctr = plt.contour(z)
+      * Note, we'll need to size appropriately to match the STL unless we do STL here too.  Seems harder
+      * Want to map Z values zero to one to the height min/max returned from HeightMapper.  Pint for units conversion.
+      * Can then set contour levels desired.  Might add an '+' to the very top.
+      * Still need to convert the contour object to an SVG output.
 * [Contour Generator](https://contours.axismaps.com/#12/44.3808/-121.7245)
 
 # Colorado, Ouray
