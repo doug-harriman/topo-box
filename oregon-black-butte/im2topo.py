@@ -15,6 +15,9 @@ plt.imshow(im)
 ax = plt.gca()
 ax.axis='equal'
 
+#%% Scaling
+size_xy = 100  # Min xy dimension will be this value.
+size_z  =  25  # Z will be scaled to this value.
 
 # %%
 # Create Z values
@@ -32,6 +35,15 @@ print(f'  Range: {el_range:0.0f}')
 
 z *= el_range.magnitude
 z += el_low.magnitude
+
+#%% Part sizes.
+x,y = z.shape
+if x<y:
+    size_x = size_xy
+    size_y = size_xy * y/x
+else:
+    size_y = size_xy
+    size_yx= size_xy * x/y
 
 #%%
 # 3D plot
@@ -73,7 +85,11 @@ levels
 
 #%%
 
-ctr = plt.contour(z,levels=levels)
+x = np.linspace(0,size_x,num=z.shape[0],endpoint=False)
+y = np.linspace(0,size_y,num=z.shape[1],endpoint=False)
+
+
+ctr = plt.contour(y,x,z,levels=levels)
 ax = plt.gca()
 ax.axis='equal'
 cl = ax.clabel(ctr, ctr.levels,  fontsize=4, fmt='%d',inline=True)
@@ -95,7 +111,7 @@ cl = ax.clabel(ctr, ctr.levels,  fontsize=4, fmt='%d',inline=True)
 # ** .get_text()
 # ** .get_position(): returns x,y tuple
 
-def Contour2Gcode(ctr):
+def Contour2Gcode(ctr,size_z:float=1):
     '''
     Converts Matplotlib contour obect to G-Code lines.
     '''
@@ -107,6 +123,11 @@ def Contour2Gcode(ctr):
 
     gcode = ''
 
+    # Z scale handling
+    z_range  = ctr.zmax - ctr.zmin
+    z_scale  = size_z / z_range
+    z_offset = ctr.zmin 
+
     for i_level,level in enumerate(ctr.levels):
         # If no data, skip
         segments = ctr.collections[i_level].get_segments()
@@ -114,7 +135,7 @@ def Contour2Gcode(ctr):
             continue
 
         # Process each line in the segment
-        Z = f'Z{level:0.3f}'
+        Z = f'Z{(level-z_offset)*z_scale:0.3f}'
         for segment in segments:
             first_point = True
             for point in segment:
@@ -129,7 +150,7 @@ def Contour2Gcode(ctr):
 
     return gcode
 
-gcode = Contour2Gcode(ctr)
+gcode = Contour2Gcode(ctr,size_z=size_z)
 fn_ctr = 'contours.nc'
 with open(fn_ctr,'w') as fp:
     fp.write(gcode)
