@@ -1,15 +1,13 @@
 #%%
 import matplotlib.pyplot as plt
 import matplotlib.image  as img
-from matplotlib.tri import Triangulation
-# from mpl_toolkits import plt3
-from mpl_toolkits.mplot3d import Axes3D
 import numpy as np
 from pint import Quantity as Q
 
 #%%
 fn = 'heightmapper-1624123293352.png'  # Just surface
 # fn = 'heightmapper-1624119991507.png'  # With cyan roads
+# fn = 'heightmapper-cyan.png'  # Closeup of cyan stuff
 im = img.imread(fn)
 plt.imshow(im)
 ax = plt.gca()
@@ -18,6 +16,18 @@ ax.axis='equal'
 #%% Scaling
 size_xy = 100  # Min xy dimension will be this value.
 size_z  =  25  # Z will be scaled to this value.
+
+#%% Finding roads
+# Look for colors that are not gray.
+gray_idx_x,gray_idx_y = np.where(np.isclose(im[:,:,0],im[:,:,1]) & np.isclose(im[:,:,1],im[:,:,2]))
+
+# Create a roads image
+im_roads = np.zeros(im.shape) # Black image
+im_roads[gray_idx_x,gray_idx_y,:] = np.ones(4) # Set all the grayscale to white.
+
+# Show just the roads
+plt.imshow(im_roads)
+
 
 # %%
 # Create Z values
@@ -71,7 +81,7 @@ else:
 # https://github.com/WoLpH/numpy-stl/issues/19
 # Port this: https://www.mathworks.com/matlabcentral/fileexchange/4512-surf2stl
 
-#%%
+#%% Contour Levels
 delta_min = 100
 delta = 500
 level_low  = delta * round(z.min() / delta)
@@ -83,7 +93,7 @@ levels = np.append(levels, np.floor(z.max()))
 levels = np.sort(levels)
 levels
 
-#%%
+#%% Create Contours
 
 x = np.linspace(0,size_x,num=z.shape[0],endpoint=False)
 y = np.linspace(0,size_y,num=z.shape[1],endpoint=False)
@@ -110,7 +120,11 @@ cl = ax.clabel(ctr, ctr.levels,  fontsize=4, fmt='%d',inline=True)
 # * ctr.labelTexts[i].get_rotation() has rotation of text.  Will need a G-code rotator.
 # ** .get_text()
 # ** .get_position(): returns x,y tuple
-
+# * Text needs to be rotated in 3D to be normal to surface so that it doesn't go in and out of focus
+# ** Need to determine the center coordinate of the text from the text info somehow, in image coordinates
+# ** Find the triange from the STL that contains that point.
+# ** Get the normal vector for the triangle
+# ** Set the text plane normal to the triangle normal
 def Contour2Gcode(ctr,size_z:float=1):
     '''
     Converts Matplotlib contour obect to G-Code lines.
@@ -128,6 +142,9 @@ def Contour2Gcode(ctr,size_z:float=1):
     z_scale  = size_z / z_range
     z_offset = ctr.zmin 
 
+    laser_power    = 600
+    laser_on_speed = 500
+
     for i_level,level in enumerate(ctr.levels):
         # If no data, skip
         segments = ctr.collections[i_level].get_segments()
@@ -141,14 +158,22 @@ def Contour2Gcode(ctr,size_z:float=1):
             for point in segment:
                 if first_point:
                     # Go to first point
-                    # TODO: Laser on
                     gcode += '\n' + f';Segment Level: {level:0.1f}'  + '\n'
                     gcode += f'G0 X{point[0]:0.3f} Y{point[1]:0.3f} {Z} F1000'+ '\n'
                     first_point = False
+
+                    # Laser on
+                    gcode += f'M4 S{laser_power} ;Laser on' + '\n'
+                    gcode += f'F{laser_on_speed}' + '\n'
+
                 else:
-                    gcode += f'G1 X{point[0]:0.3f} Y{point[1]:0.3f} F500' + '\n'
+                    gcode += f'G1 X{point[0]:0.3f} Y{point[1]:0.3f}' + '\n'
+
+            # Laser off at end of segment
+            gcode += 'M5        ;Laser off' + '\n'
 
     return gcode
+
 
 gcode = Contour2Gcode(ctr,size_z=size_z)
 fn_ctr = 'contours.nc'
@@ -156,7 +181,5 @@ with open(fn_ctr,'w') as fp:
     fp.write(gcode)
 
 
-# %%
-# Save file
-plt.savefig('topo.svg')
+
 # %%
