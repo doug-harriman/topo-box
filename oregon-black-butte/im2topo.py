@@ -1,38 +1,39 @@
 #%%
 import matplotlib.pyplot as plt
-import matplotlib.image  as img
 import numpy as np
 from pint import Quantity as Q
 
-#%%
-fn = 'heightmapper-1624123293352.png'  # Just surface
-# fn = 'heightmapper-1624119991507.png'  # With cyan roads
-# fn = 'heightmapper-cyan.png'  # Closeup of cyan stuff
-im = img.imread(fn)
-plt.imshow(im)
-ax = plt.gca()
-ax.axis='equal'
+# Street maps from openstreetmap.org.
+# Can manually set extents you get from TouchTerrain
+# Will need to map lines to surface via Fusion.
 
 #%% Scaling
-size_xy = 100  # Min xy dimension will be this value.
+# X/Y scaling comes directly from TouchTerrain.
+thickness_base = 1 # Setting from TouchTerrain
 size_z  =  25  # Z will be scaled to this value.
 
-#%% Finding roads
-# Look for colors that are not gray.
-gray_idx_x,gray_idx_y = np.where(np.isclose(im[:,:,0],im[:,:,1]) & np.isclose(im[:,:,1],im[:,:,2]))
+# Notes:
+# * Look at doing a base thickness of 0 and see how it's handled.  May simplifiy things.
+# * Should be able to determine Z scaling by looking at lat & long, and x,y scales, assuming z scalefactor of 1.
 
-# Create a roads image
-im_roads = np.zeros(im.shape) # Black image
-im_roads[gray_idx_x,gray_idx_y,:] = np.ones(4) # Set all the grayscale to white.
+#%% Load STL object
+# https://touchterrain.geol.iastate.edu/
+from stl import mesh
 
-# Show just the roads
-plt.imshow(im_roads)
+fn = 'NED_-121.64_44.40_tile_1_1.STL'
+m = mesh.Mesh.from_file(fn)
 
+# Apply Z-scaling
+scale_z = size_z / m.max_[2]  
+m.z *= scale_z
+m.update_max()
+m.update_min()
+
+# Save out updated STL with desired z-scling
+m.save(f'scaled-z-{size_z}mm.stl')
 
 # %%
 # Create Z values
-z = im[:,:,0]
-z = np.flipud(z)
 
 # Scale per Geograpic data
 el_low  = Q( 936,'m').to('ft')
@@ -43,17 +44,47 @@ print(f'  Low  : {el_low:0.0f}')
 print(f'  High : {el_high:0.0f}')
 print(f'  Range: {el_range:0.0f}')
 
-z *= el_range.magnitude
-z += el_low.magnitude
+# TODO: Account for STL base thickness
+# * Shift down by base thickness.  Topo 0 elevation should be at 0 now.
+# * Apply scaling.  Base thickness will be scaled, but will be negative.
+#   
+m.z -= thickness_base                # Put min elevation at zero in Z.
+m.z *= el_range.magnitude / size_z   # Scale for correct elevations.
+m.z += el_low.magnitude              # Offset for base elevation.
+
+#%% STL to height map
+# Note: Not getting anything out of the GeoTIFF (expecting a TIFF image)
+#       Essentially reversing the mapping to go from a trimesh to a Z matrix of heights.
+p = (m.points*1000).astype(np.int32)  # Convert to ints to avoid float eps issues.
+r,c = p.shape
+p = p.reshape(int(r*c/3),3) 
+_,idx = np.unique(p[:,0:2],axis=0,return_index=True)       # Eliminate duplicate trimesh corners, ~12x reduction.
+p = p[idx,]
+p = p[np.lexsort((p[:,1],p[:,0]))]  # Sort by x, then y.
+
+xv = np.unique(p[:,0])
+yv = np.unique(p[:,1])
+
+# Convert Z values to matrix
+z = p[:,2]
+z = z.reshape(len(xv),len(yv))
+
+# Create x & y matrices
+x,y = np.meshgrid(xv,yv)
+
+# Convert everything back to floating point in original units.
+x = x.astype(float)/1000
+y = y.astype(float)/1000
+z = z.astype(float)/1000
 
 #%% Part sizes.
-x,y = z.shape
-if x<y:
-    size_x = size_xy
-    size_y = size_xy * y/x
-else:
-    size_y = size_xy
-    size_yx= size_xy * x/y
+# x,y = z.shape
+# if x<y:
+#     size_x = size_xy
+#     size_y = size_xy * y/x
+# else:
+#     size_y = size_xy
+#     size_yx= size_xy * x/y
 
 #%%
 # 3D plot
@@ -94,12 +125,11 @@ levels = np.sort(levels)
 levels
 
 #%% Create Contours
+# x = np.linspace(0,size_x,num=z.shape[0],endpoint=False)
+# y = np.linspace(0,size_y,num=z.shape[1],endpoint=False)
 
-x = np.linspace(0,size_x,num=z.shape[0],endpoint=False)
-y = np.linspace(0,size_y,num=z.shape[1],endpoint=False)
 
-
-ctr = plt.contour(y,x,z,levels=levels)
+ctr = plt.contour(x,y,z.transpose())#,levels=levels)
 ax = plt.gca()
 ax.axis='equal'
 cl = ax.clabel(ctr, ctr.levels,  fontsize=4, fmt='%d',inline=True)
