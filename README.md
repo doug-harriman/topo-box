@@ -70,5 +70,7 @@ Small boxes with lids that are topographic reliefs.
 10. Mill topo model surface.
 11. Finish sand top surface.
 12. Generate contour line laser paths.
-13. Generate additional artwork laser paths (such as roads, compass rose, etc.)
-14. Laser etch topside.
+13. Generate additional artwork SVG (such as roads, compass rose, etc.)
+14. Project artwork SVG to surface in Fusion360.
+15. Generate artwork laser paths in Fusion360.
+16. Laser etch topside.
