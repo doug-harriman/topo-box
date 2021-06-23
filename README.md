@@ -23,18 +23,18 @@ Small boxes with lids that are topographic reliefs.
   * Note that street maps contain a lot of data an need significant cleanup before generating laser paths. 
 * [Fusion360](https://www.autodesk.com/products/fusion-360/) for modeling and CNC tool paths.
 
-## Elevation Contour Generation
+## Elevation Contour Generation Tool Process Overview
 * STL downloaded from TouchTerrain.
 
 <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-3dviewer.net-stl-view.png" width="400">
 
 * STL data read with [Numpy-STL](https://github.com/WoLpH/numpy-stl/)
-* Triangle mesh converted to a height matrix.
+* Triangle mesh converted to a height matrix via a series of Numpy ND array set and reshape operations.
 * Contour lines generated with [Matplotlib contour](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contour.html)
 
 <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-matplotlib-contours.png" width="400">
 
-* Contour line object converted to Laser G-Code paths
+* Contour line object converted to Laser G-Code paths with a simple function.
 
 <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-ncviewer-laser-contours.png" width="400">
 
@@ -57,3 +57,18 @@ Small boxes with lids that are topographic reliefs.
 # Oregon, Black Butte
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/?trlat=44.429197180580594&trlon=-121.59384723130317&bllat=44.3616143717882&bllon=-121.68289944838435&DEM_name=USGS/NED&tilewidth=100&printres=0.2&ntilesx=1&ntilesy=1&DEMresolution=14.19&basethick=1&zscale=-25.4&fileformat=STLb&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.38402186929164&map_lon=-121.65242965263509&map_zoom=13) model.
 
+# Fabrication Steps
+1. Download STL model from TouchTerrain.
+2. Capture all output data from TouchTerrain.
+3. Determine model maximum sizes based on material & tool limits.
+4. Mill bottom side of model flat.
+5. Cut model/box outline.
+7. Finish sand bottom side of model.
+6. Generate any bottom side artwork.
+8. Laser etch bottom side.
+9. Generate topographic model tool paths.
+10. Mill topo model surface.
+11. Finish sand top surface.
+12. Generate contour line laser paths.
+13. Generate additional artwork laser paths (such as roads, compass rose, etc.)
+14. Laser etch topside.
