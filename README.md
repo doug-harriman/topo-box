@@ -24,6 +24,10 @@ Small boxes with lids that are topographic reliefs.
 * [Fusion360](https://www.autodesk.com/products/fusion-360/) for modeling and CNC tool paths.
 
 ## Elevation Contour Generation
+* STL downloaded from TouchTerrain.
+
+<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-3dviewer.net-stl-view.png" width="400">
+
 * STL data read with [Numpy-STL](https://github.com/WoLpH/numpy-stl/)
 * Triangle mesh converted to a height matrix.
 * Contour lines generated with [Matplotlib contour](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contour.html)
