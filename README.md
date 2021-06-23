@@ -11,20 +11,28 @@ Small boxes with lids that are topographic reliefs.
 * [Image2STL](https://imagetostl.com/) online converter from grayscale to STL files.
 
 # Tools
-* [QGIS](https://www.qgis.org/en/site/) - Free and Open Source Geographic Information System 
-  * [DEMto3D](https://plugins.qgis.org/plugins/DEMto3D/) plugin for QGIS.
-  * [SimpleSVG](https://plugins.qgis.org/plugins/simplesvg/) plugin for QGIS.
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/)
-* [HeightMapper](https://tangrams.github.io/heightmapper) Grayscale Image
-  * Topo conversion process notes
-    * [Load image into Python](https://matplotlib.org/stable/tutorials/introductory/images.html)
-    * Since it's grayscale, RGB color channels are the same.  Convert to a Z height matrix by extracting red channel: z = image[:,:,0]  
-    * Create a contour plot: ctr = plt.contour(z)
-      * Note, we'll need to size appropriately to match the STL unless we do STL here too.  Seems harder
-      * Want to map Z values zero to one to the height min/max returned from HeightMapper.  Pint for units conversion.
-      * Can then set contour levels desired.  Might add an '+' to the very top.
-      * Still need to convert the contour object to an SVG output.
-* [Contour Generator](https://contours.axismaps.com/#12/44.3808/-121.7245)
+  * TouchTerrain is used to generate the STL for the models.
+  * It also provides data that is used for creation of the elevation contour lines that are laser etched. 
+* stl2topo_contours.py
+  * Custom developed script that takes STL and additional data, and creates topographic elevation contour lines.
+  * Contour lines are converted into 3D laser paths for etching into the model.
+* [Open Street Map](openstreetmap.org)
+  * Provides SVG street map data that can be converted to laser paths with [InkScape](https://inkscape.org/), see: https://github.com/doug-harriman/3018-Mill#laser
+  * Maps can take latitude and longitude data from TouchTerrain output so that map outline exactly matches STL outline.
+  * Note that street maps contain a lot of data an need significant cleanup before generating laser paths. 
+* [Fusion360](https://www.autodesk.com/products/fusion-360/) for modeling and CNC tool paths.
+
+## Elevation Contour Generation
+* STL data read with [Numpy-STL](https://github.com/WoLpH/numpy-stl/)
+* Triangle mesh converted to a height matrix.
+* Contour lines generated with [Matplotlib contour](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contour.html)
+
+<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-matplotlib-contours.png" width="400">
+
+* Contour line object converted to Laser G-Code paths
+
+<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-ncviewer-laser-contours.png" width="400">
 
 # Colorado, Ouray
 * First topo box project.  Did not save model files.
@@ -44,6 +52,4 @@ Small boxes with lids that are topographic reliefs.
 
 # Oregon, Black Butte
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/?trlat=44.429197180580594&trlon=-121.59384723130317&bllat=44.3616143717882&bllon=-121.68289944838435&DEM_name=USGS/NED&tilewidth=100&printres=0.2&ntilesx=1&ntilesy=1&DEMresolution=14.19&basethick=1&zscale=-25.4&fileformat=STLb&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.38402186929164&map_lon=-121.65242965263509&map_zoom=13) model.
-* [Oregon GIS](https://spatialdata.oregonexplorer.info/geoportal/search)
-* [Oregon Transportation Network](ftp://ftp.gis.oregon.gov/transportation/or_trans_network_public_2019.zip)
-* [Grayscale Image](https://tangrams.github.io/heightmapper/#13.19792/44.3946/-121.6303)
+
