@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from pint import Quantity as Q
+from stl import mesh  # https://github.com/WoLpH/numpy-stl/
 
 # Street maps from openstreetmap.org.
 # Can manually set extents you get from TouchTerrain
@@ -13,11 +14,9 @@ thickness_base = 1 # Setting from TouchTerrain
 
 model_size_z  =  25  # Z will be scaled to this value.
 model_size_xy =  75  # Scale max XY dimension to this value.
- 
 
 #%% Load STL object
 # https://touchterrain.geol.iastate.edu/
-from stl import mesh
 
 fn = 'NED_-121.64_44.40_tile_1_1.STL'
 m  = mesh.Mesh.from_file(fn)
@@ -143,7 +142,6 @@ z = z.astype(float)/1000
 #%% 
 # Write the surface to STL
 # https://github.com/WoLpH/numpy-stl/issues/19
-# Port this: https://www.mathworks.com/matlabcentral/fileexchange/4512-surf2stl
 
 #%% Contour Levels
 delta_min = 100
@@ -167,18 +165,15 @@ ax = plt.gca()
 ax.axis='equal'
 cl = ax.clabel(ctr, ctr.levels,  fontsize=4, fmt='%d',inline=True)
 
+#%% Text box size
+renderer = plt.figure().canvas.get_renderer()
+inv      = ax.transData.inverted()
+
+
+
 #%% 
-# Extracting contour lines
-# seg = ctr.collections[1].get_segments()
-
-# TODO: Units conversion. Contour x,y in pixels, z in feet at this point.
-#       * Update contour generation to use scaled x,y so that portion is handled.
-#       * x & y in CNC units for part fabriction.
-#       * pass in Z scaling for mountain elevation to CNC units.
-# TODO: Need job setup header, laser on/off control.
-
 # TODO: Text conversion.  Not that contours do have gaps for text.
-# * No idea how to deal with font sizes.  May just have to skip
+# See: https://stackoverflow.com/questions/5320205/matplotlib-text-dimensions
 # * ctr has label data stored once labels are generated: ctr.labelTexts[]
 # * ctr.labelTexts[i].get_rotation() has rotation of text.  Will need a G-code rotator.
 # ** .get_text()
@@ -198,7 +193,11 @@ def Contour2Gcode(ctr,size_z:float=1):
     # Levels per ctr.levels
     # Note: segments may be empty
 
-    gcode = ''
+    gcode = '''(Machine Setup)
+G90  (Absolute Position Mode)
+G21  (Units = millimeters)
+
+'''
 
     # Z scale handling
     z_range  = ctr.zmax - ctr.zmin
@@ -235,10 +234,12 @@ def Contour2Gcode(ctr,size_z:float=1):
             # Laser off at end of segment
             gcode += 'M5        ;Laser off' + '\n'
 
+    gcode += 'M2  ; Job Complete'
+
     return gcode
 
 
 gcode = Contour2Gcode(ctr,size_z=model_size_z)
-fn_ctr = 'contours.nc'
+fn_ctr = 'topo_contours.nc'
 with open(fn_ctr,'w') as fp:
     fp.write(gcode)
