@@ -138,11 +138,6 @@ x = x.astype(float)/1000
 y = y.astype(float)/1000
 z = z.astype(float)/1000
 
-
-#%% 
-# Write the surface to STL
-# https://github.com/WoLpH/numpy-stl/issues/19
-
 #%% Contour Levels
 delta_min = 100
 delta = 500
@@ -169,8 +164,6 @@ cl = ax.clabel(ctr, ctr.levels,  fontsize=4, fmt='%d',inline=True)
 renderer = plt.figure().canvas.get_renderer()
 inv      = ax.transData.inverted()
 
-
-
 #%% 
 # TODO: Text conversion.  Not that contours do have gaps for text.
 # See: https://stackoverflow.com/questions/5320205/matplotlib-text-dimensions
@@ -183,6 +176,22 @@ inv      = ax.transData.inverted()
 # ** Find the triange from the STL that contains that point.
 # ** Get the normal vector for the triangle
 # ** Set the text plane normal to the triangle normal
+
+# 3D rotation matrix to align one vector to another
+# https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+# * Text is generated with a Z unit normal.
+# * Find the center of the contour label text box in XY.
+# * Find the triangle in the mesh which encloses the label center.
+# * Determine the text label center Z-height from that triangle info.
+# * Get the triangle unit normal.
+# * Generate the label text G-code
+# * Translate the label gc to the origin.
+# * Calculate the rotation matrix.
+# * Rotate the G-Code
+# * Translate the G-code
+# * Write to file.
+
+#%% Generate Contour G-Code
 def Contour2Gcode(ctr,size_z:float=1):
     '''
     Converts Matplotlib contour obect to G-Code lines.
