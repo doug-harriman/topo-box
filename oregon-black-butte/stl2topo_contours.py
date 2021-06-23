@@ -4,9 +4,9 @@ import numpy as np
 from pint import Quantity as Q
 from stl import mesh  # https://github.com/WoLpH/numpy-stl/
 
-# Street maps from openstreetmap.org.
-# Can manually set extents you get from TouchTerrain
-# Will need to map lines to surface via Fusion.
+# TODO: XY size should take a max X and a max Y, then figure out how to fit it.
+# TODO: Collect all input variables at the top.
+# TODO: Support YAML or basic text config file input.
 
 #%% Scaling
 # X/Y scaling comes directly from TouchTerrain.
