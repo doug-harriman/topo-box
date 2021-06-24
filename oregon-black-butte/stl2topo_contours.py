@@ -19,6 +19,8 @@ elevation_units   = 'ft'  # Elevation contour units.
 contour_delta     = 500   # Main elevation steps.
 contour_delta_min = 100   # Initial elevation level above base if not on a main elevation step.
 
+fontsize = 7  # Font size for contour labels
+
 #%% Read in data from log file
 fn_log = 'logfile.txt'
 with open(fn_log,'r') as fp:
@@ -128,22 +130,36 @@ levels
 ctr = plt.contour(x,y,z.transpose(),levels=levels)
 ax = plt.gca()
 ax.axis='equal'
-cl = ax.clabel(ctr, ctr.levels,  fontsize=4, fmt='%d',inline=True)
+cl = ax.clabel(ctr, ctr.levels,  fontsize=fontsize, fmt='%d',inline=True)
 
-#%% Text box size
+
+#%% 
+# TODO: Text conversion.  Note that contours do have gaps for text.
+# TODO: Create a heuristic for font size based on model size.  Set the plot size?
+# See: https://stackoverflow.com/questions/5320205/matplotlib-text-dimensions
 renderer = plt.figure().canvas.get_renderer()
 inv      = ax.transData.inverted()
 
-#%% 
-# TODO: Text conversion.  Not that contours do have gaps for text.
-# See: https://stackoverflow.com/questions/5320205/matplotlib-text-dimensions
-# * ctr has label data stored once labels are generated: ctr.labelTexts[]
-# * ctr.labelTexts[i].get_rotation() has rotation of text.  Will need a G-code rotator.
-# ** .get_text()
-# ** .get_position(): returns x,y tuple
+txt_height = None
+for label in ctr.labelTexts:
+    txt = label.get_text()
+    txt_center = np.array([label._x,label._y])
+    txt_rotation = label.get_rotation()
+
+    # Determine the height of the text
+    if txt_height is None:
+        # Get the text bounding box.  Note that if the text is rotated, the BB 
+        # fits the diagonal text.  BB extents do not provide info on text height.
+        # Rotate the label back to horizontal, then read the new bounding box values.
+        # From that, extract the text height.
+        label.set_rotation(0)
+        bb = label.get_window_extent(renderer=renderer)
+        bb = inv.transform(bb)
+        txt_height = np.diff(bb[:,1])[0]
+        print(f'Text height: {txt_height:0.1f}mm')
+    
 # * Text needs to be rotated in 3D to be normal to surface so that it doesn't go in and out of focus
-# ** Need to determine the center coordinate of the text from the text info somehow, in image coordinates
-# ** Find the triange from the STL that contains that point.
+# ** Find the triange from the STL that contains the text center point.
 # ** Get the normal vector for the triangle
 # ** Set the text plane normal to the triangle normal
 
