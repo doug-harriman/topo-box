@@ -21,13 +21,14 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 
 <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-3dviewer.net-stl-view.png" width="400">
 
-* STL data read with [Numpy-STL](https://github.com/WoLpH/numpy-stl/)
-* Triangle mesh converted to a height matrix via a series of Numpy ND array set and reshape operations.
-* Contour lines generated with [Matplotlib contour](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contour.html)
+* [stl2topo_contours.py](oregon-black-butte/stl2topo_contours.py) generation of 3D laser tool paths.
+  * STL data read with [Numpy-STL](https://github.com/WoLpH/numpy-stl/)
+  * Triangle mesh converted to a height matrix via a series of Numpy ND array set and reshape operations.
+  * Contour lines generated with [Matplotlib contour](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.contour.html)
 
-<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-matplotlib-contours.png" width="400">
+  <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-matplotlib-contours.png" width="400">
 
-* Contour line object converted to Laser G-Code paths with a simple function.
+  * Contour line object converted to Laser G-Code paths with a simple function.
 
 <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-ncviewer-laser-contours.png" width="400">
 
