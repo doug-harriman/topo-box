@@ -1,4 +1,5 @@
 #%%
+import re
 import matplotlib.pyplot as plt
 import numpy as np
 from pint import Quantity as Q
@@ -9,37 +10,58 @@ from stl import mesh  # https://github.com/WoLpH/numpy-stl/
 # TODO: Support YAML or basic text config file input.
 
 #%% Scaling
-# X/Y scaling comes directly from TouchTerrain.
-thickness_base = 1 # Setting from TouchTerrain
+# Model material limits
+model_size_z_max =  25  # Topology will be scaled to this value.  Base will be extra.
+model_size_x_max =  75  # Scale max X dimension.
+model_size_y_max =  75  # Scale max Y dimension.
 
-model_size_z  =  25  # Z will be scaled to this value.
-model_size_xy =  75  # Scale max XY dimension to this value.
+elevation_units = 'ft'  # Pint units
 
-#%% Load STL object
-# https://touchterrain.geol.iastate.edu/
+#%% Read in data from log file
+fn_log = 'logfile.txt'
+with open(fn_log,'r') as fp:
+    log = fp.read()
 
-fn = 'NED_-121.64_44.40_tile_1_1.STL'
-m  = mesh.Mesh.from_file(fn)
+# Extract elevations
+re_num = '[+-]?[0-9.]+'
+match = re.search(f'elev. min/max: (?P<el_low>{re_num}) (?P<el_high>{re_num})', log)
+# elev. min/max: 918.4536743164062 1962.7933349609375 
+
+el_low  = float(match.group('el_low'))
+el_high = float(match.group('el_high'))
+
+el_low  = Q(el_low,'m').to(elevation_units).magnitude
+el_high = Q(el_high,'m').to(elevation_units).magnitude
+
+# Scaling and base thickness
+match = re.search(f'basethick = (?P<thickness_base>{re_num})', log)
+thickness_base = float(match.group('thickness_base'))
+
+#%% Load STL objects# https://touchterrain.geol.iastate.edu/
+# Black Butte link:
+# https://touchterrain.geol.iastate.edu/?trlat=44.43009951161787&trlon=-121.59661098226607&bllat=44.36171176019724&bllon=-121.68013569742145&DEM_name=USGS/NED&tilewidth=100&printres=0.199&ntilesx=1&ntilesy=1&DEMresolution=13.24&basethick=1&zscale=1.0&fileformat=GeoTiff&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.40267120931056&map_lon=-121.63846332184082&map_zoom=13
+fn_stl = 'NED_-121.64_44.40_tile_1_1.STL'
+m  = mesh.Mesh.from_file(fn_stl)
 
 # Force model corner to origin
 m.x -= m.x.min()
 m.y -= m.y.min()
 
-# Apply X&Y scalings
-if model_size_xy is not None:
-    sz_x = m.x.max()
-    sz_y = m.y.max()
-    if sz_x > sz_y:
-        ratio = model_size_xy / sz_x
-    else:
-        ratio = model_size_xy / sz_y
+# Apply X&Y scalings so that model fits in the most constrained dimension
+sz_x = m.x.max()
+sz_y = m.y.max()
+if sz_x > model_size_x_max:
+    ratio_x = model_size_x_max / sz_x
+if sz_y > model_size_y_max:
+    ratio_y = model_size_y_max / sz_y
+ratio = np.min([ratio_x,ratio_y])
 
 m.x *= ratio
 m.y *= ratio
 
 # Apply Z-scaling
 m.z -= thickness_base
-scale_z = model_size_z / m.max_[2]  
+scale_z = model_size_z_max / m.max_[2]  
 m.z *= scale_z
 m.update_max()
 m.update_min()
@@ -50,56 +72,10 @@ m.save(f'scaled-{m.x.max():0.0f}mm-{m.y.max():0.0f}mm-{m.z.max():0.0f}mm.stl')
 # Put Z back
 m.z /= scale_z
 
-#%% Determine map distances so we can figure out Z scaling.
-# Values from TouchTerrain
-trlat = np.float64(44.43009951161787)
-trlon = np.float64(-121.59661098226607)
-
-bllat = np.float64(44.36171176019724)
-bllon = np.float64(-121.68013569742145)
-
-# Haversine Formula
-# https://www.movable-type.co.uk/scripts/latlong.html
-R            = 6371e3  # [m], Earth's radius in meters
-
-# X calc
-phi1         = np.deg2rad(trlat)
-phi2         = np.deg2rad(trlat)
-delta_phi    = phi1-phi2
-delta_lambda = np.deg2rad(bllon-trlon)
-
-a = np.sin(delta_phi/2) * np.sin(delta_phi/2) + np.cos(phi1) * np.cos(phi2) * np.sin(delta_lambda/2) * np.sin(delta_lambda/2)
-c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1-a))
-x_dist = R * c # [m]
-
-# Y calc
-phi1         = np.deg2rad(trlat)
-phi2         = np.deg2rad(bllat)
-delta_phi    = phi1-phi2
-delta_lambda = np.deg2rad(0)
-
-a = np.sin(delta_phi/2) * np.sin(delta_phi/2) + np.cos(phi1) * np.cos(phi2) * np.sin(delta_lambda/2) * np.sin(delta_lambda/2)
-c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1-a))
-y_dist = R * c # [m]
-
-# print(f'x: {x_dist} m')
-# print(f'y: {y_dist} m')
-# print(f'ratio: {x_dist/y_dist}')
-
-# Determine scaling in each direction
-x_scale = x_dist / m.x.max()
-y_scale = y_dist / m.y.max()
-# print(f'X Scale: {x_scale}')
-# print(f'Y Scale: {y_scale}')
-xy_scale = np.mean([x_scale,y_scale]) # [m/mm]
-xy_scale = Q(xy_scale,'m').to('ft').magnitude # [ft/mm]
-
 # %%
 # Create Z values
-el_high = Q(1960,'m').to('ft').magnitude        # You have to know the peak of model
-el_low  = el_high - m.z.max()*xy_scale*ratio 
 
-# Scale per Geograpic data
+# Geograpic data
 el_range = el_high - el_low
 print('Elevations')
 print(f'  Low  : {el_low:0.0f}')
@@ -147,7 +123,7 @@ levels = np.arange(level_low,level_high,delta)
 
 levels = np.append(levels, delta_min * round(el_low / delta_min) )
 levels = np.append(levels, np.floor(el_high))
-levels = np.sort(levels)
+levels = np.unique(levels)
 levels
 
 #%% Create Contours
@@ -248,7 +224,7 @@ G21  (Units = millimeters)
     return gcode
 
 
-gcode = Contour2Gcode(ctr,size_z=model_size_z)
+gcode = Contour2Gcode(ctr,size_z=model_size_z_max)
 fn_ctr = 'topo_contours.nc'
 with open(fn_ctr,'w') as fp:
     fp.write(gcode)
