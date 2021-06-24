@@ -1,20 +1,13 @@
 # topo-box
-Small boxes with lids that are topographic reliefs.
+Small boxes with lids that are topographic reliefs.  The goal of this project relative to others is to add labelled elevation contours to the topographic relief with a laser etcher.  This requires generation of 3D laser tool paths.
 
 ![Ouray Colorado](images/usa-colorado-ouray/ouray-1-small.jpg)
-
-# How-To Links
-* [Great overview](https://theshamblog.com/making-a-laser-cut-topo-map-the-design-phase/) of creating laser cut topographic map from wood layers from Scott Shambaugh.
-* [QGIS to SVG overview](https://dominoc925.blogspot.com/2014/05/qgis-export-layers-to-svg-for.html) on the Dominoc925 blog.
-* [3D printing of digital elevation models with QGIS](https://edutechwiki.unige.ch/en/3D_printing_of_digital_elevation_models_with_QGIS) on the EduTech Wiki.
-* [3D Printing Terrain Models](https://edutechwiki.unige.ch/en/3D_printing_of_digital_elevation_models_with_QGIS) with QGIS on the EduTech Wiki.
-* [Image2STL](https://imagetostl.com/) online converter from grayscale to STL files.
 
 # Tools
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/)
   * TouchTerrain is used to generate the STL for the models.
   * It also provides data that is used for creation of the elevation contour lines that are laser etched. 
-* stl2topo_contours.py
+* [stl2topo_contours.py](oregon-black-butte/stl2topo_contours.py)
   * Custom developed script that takes STL and additional data, and creates topographic elevation contour lines.
   * Contour lines are converted into 3D laser paths for etching into the model.
 * [Open Street Map](openstreetmap.org)
@@ -39,7 +32,7 @@ Small boxes with lids that are topographic reliefs.
 <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-ncviewer-laser-contours.png" width="400">
 
 # Colorado, Ouray
-* First topo box project.  Did not save model files.
+* First topo box project.  Unfortunately, I did not save model files.
 * Milled from 3/4" black walnut ordered on Amazon.
 * Model from: https://jthatch.com/Terrain2STL/, did not save exact model, loaded into Fusion360 for milling.
 * Surface:
