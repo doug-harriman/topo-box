@@ -9,13 +9,15 @@ from stl import mesh  # https://github.com/WoLpH/numpy-stl/
 # TODO: Collect all input variables at the top.
 # TODO: Support YAML or basic text config file input.
 
-#%% Scaling
+#%% Configuration values
 # Model material limits
 model_size_z_max =  25  # Topology will be scaled to this value.  Base will be extra.
 model_size_x_max =  75  # Scale max X dimension.
 model_size_y_max =  75  # Scale max Y dimension.
 
-elevation_units = 'ft'  # Pint units
+elevation_units   = 'ft'  # Elevation contour units.
+contour_delta     = 500   # Main elevation steps.
+contour_delta_min = 100   # Initial elevation level above base if not on a main elevation step.
 
 #%% Read in data from log file
 fn_log = 'logfile.txt'
@@ -72,9 +74,7 @@ m.save(f'scaled-{m.x.max():0.0f}mm-{m.y.max():0.0f}mm-{m.z.max():0.0f}mm.stl')
 # Put Z back
 m.z /= scale_z
 
-# %%
-# Create Z values
-
+# %% Z-Scaling for elevation contours
 # Geograpic data
 el_range = el_high - el_low
 print('Elevations')
@@ -95,7 +95,7 @@ m.z += el_low                # Offset for base elevation.
 p = (m.points*1000).astype(np.int32)  # Convert to ints to avoid float eps issues.
 r,c = p.shape
 p = p.reshape(int(r*c/3),3) 
-_,idx = np.unique(p[:,0:2],axis=0,return_index=True)       # Eliminate duplicate trimesh corners, ~12x reduction.
+_,idx = np.unique(p[:,0:2],axis=0,return_index=True) # Eliminate duplicate trimesh corners, ~12x reduction.
 p = p[idx,]
 p = p[np.lexsort((p[:,1],p[:,0]))]  # Sort by x, then y.
 
@@ -115,22 +115,16 @@ y = y.astype(float)/1000
 z = z.astype(float)/1000
 
 #%% Contour Levels
-delta_min = 100
-delta = 500
-level_low  = delta * round(el_low  / delta)
-level_high = delta * round(el_high / delta)
-levels = np.arange(level_low,level_high,delta)
+level_low  = contour_delta * round(el_low  / contour_delta)
+level_high = contour_delta * round(el_high / contour_delta)
+levels = np.arange(level_low,level_high,contour_delta)
 
-levels = np.append(levels, delta_min * round(el_low / delta_min) )
+levels = np.append(levels, contour_delta_min * round(el_low / contour_delta_min) )
 levels = np.append(levels, np.floor(el_high))
 levels = np.unique(levels)
 levels
 
 #%% Create Contours
-# x = np.linspace(0,size_x,num=z.shape[0],endpoint=False)
-# y = np.linspace(0,size_y,num=z.shape[1],endpoint=False)
-
-
 ctr = plt.contour(x,y,z.transpose(),levels=levels)
 ax = plt.gca()
 ax.axis='equal'
@@ -222,7 +216,6 @@ G21  (Units = millimeters)
     gcode += 'M2  ; Job Complete'
 
     return gcode
-
 
 gcode = Contour2Gcode(ctr,size_z=model_size_z_max)
 fn_ctr = 'topo_contours.nc'
