@@ -172,7 +172,7 @@ ray_z = np.array([[0,0,1]])
 # Z-mapping is a slow operation with large STL files. 
 # Do point-by-point so we can provide status updates
 print(f'Calculating {lbl_cnt} contour elevation labels to Z-heights (slow operation)')
-idx_tri = np.zeros(lbl_cnt)
+idx_tri = np.zeros(lbl_cnt,dtype=int)
 for idx, ctr in enumerate(lbl_ctr):
     print(f'  Mapping label {idx+1} of {lbl_cnt}...',end='',flush=True)
     origin = np.array([[float(ctr[0]),float(ctr[1]),0]])
@@ -184,8 +184,10 @@ for idx, ctr in enumerate(lbl_ctr):
 
 #%% Rotate text labels to map to surface normal
 # * Text needs to be rotated in 3D to be normal to surface so that it doesn't go in and out of focus
-# ** Find the triange from the STL that contains the text center point.
-# ** Get the normal vector for the triangle
+lbl_norm = mesh.face_normals[idx_tri]
+
+# Create text label G-Code (created in XY plane)
+
 # ** Set the text plane normal to the triangle normal
 
 # 3D rotation matrix to align one vector to another
