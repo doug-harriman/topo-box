@@ -61,10 +61,11 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 6. Generate any bottom side artwork.
 8. Laser etch bottom side.
 9. Generate topographic model tool paths.
-10. Mill topo model surface.
-11. Finish sand top surface.
-12. Generate contour line laser paths with stl2topo_contours.py
-13. Generate additional artwork SVG (such as roads, compass rose, etc.)
-14. Project artwork SVG to surface in Fusion360.
-15. Generate artwork laser paths in Fusion360.
-16. Laser etch topside.
+10. TouchTerrain models are high fidelty.  As such, there may be too many polygons for Fusion360 to handle.  See [this article](https://toglefritz.com/convert-a-complex-stl-into-a-body-in-fusion-360/) for tips on how to reduce the model polygon count. 
+11. Mill topo model surface.
+12. Finish sand top surface.
+13. Generate contour line laser paths with stl2topo_contours.py
+14. Generate additional artwork SVG (such as roads, compass rose, etc.)
+15. Project artwork SVG to surface in Fusion360.
+16. Generate artwork laser paths in Fusion360.
+17. Laser etch topside.
