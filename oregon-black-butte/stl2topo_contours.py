@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pint import Quantity as Q
 from stl import mesh  # https://github.com/WoLpH/numpy-stl/
+import trimesh
 
 # TODO: XY size should take a max X and a max Y, then figure out how to fit it.
 # TODO: Collect all input variables at the top.
@@ -71,7 +72,8 @@ m.update_max()
 m.update_min()
 
 # Save out updated STL with desired z-scling
-m.save(f'scaled-{m.x.max():0.0f}mm-{m.y.max():0.0f}mm-{m.z.max():0.0f}mm.stl')
+fn_stl_model = f'scaled-{m.x.max():0.0f}mm-{m.y.max():0.0f}mm-{m.z.max():0.0f}mm.stl'
+m.save(fn_stl_model)
 
 # Put Z back
 m.z /= scale_z
@@ -133,31 +135,54 @@ ax.axis='equal'
 cl = ax.clabel(ctr, ctr.levels,  fontsize=fontsize, fmt='%d',inline=True)
 
 
-#%% 
+#%% Query text locations and size
 # TODO: Text conversion.  Note that contours do have gaps for text.
 # TODO: Create a heuristic for font size based on model size.  Set the plot size?
+# TODO: If plot figure size is set to model XY size, and axis fills figure, then can get direct scaling.
 # See: https://stackoverflow.com/questions/5320205/matplotlib-text-dimensions
 renderer = plt.figure().canvas.get_renderer()
 inv      = ax.transData.inverted()
 
-txt_height = None
-for label in ctr.labelTexts:
-    txt = label.get_text()
-    txt_center = np.array([label._x,label._y])
-    txt_rotation = label.get_rotation()
+# Extract text info
+lbl_cnt = len(ctr.labelTextsList)
+lbl_txt = [x.get_text() for x in ctr.labelTextsList]
+lbl_rot = [x.get_rotation() for x in ctr.labelTextsList]
+lbl_ctr = [np.array([x._x,x._y,0]) for x in ctr.labelTextsList]
 
-    # Determine the height of the text
-    if txt_height is None:
-        # Get the text bounding box.  Note that if the text is rotated, the BB 
-        # fits the diagonal text.  BB extents do not provide info on text height.
-        # Rotate the label back to horizontal, then read the new bounding box values.
-        # From that, extract the text height.
-        label.set_rotation(0)
-        bb = label.get_window_extent(renderer=renderer)
-        bb = inv.transform(bb)
-        txt_height = np.diff(bb[:,1])[0]
-        print(f'Text height: {txt_height:0.1f}mm')
-    
+# Get the text bounding box.  Note that if the text is rotated, the BB 
+# fits the diagonal text.  BB extents do not provide info on text height.
+# Rotate the label back to horizontal, then read the new bounding box values.
+# From that, extract the text height.
+label = ctr.labelTextsList[0]
+label.set_rotation(0)
+bb = label.get_window_extent(renderer=renderer)
+bb = inv.transform(bb)
+txt_height = np.diff(bb[:,1])[0]
+print(f'Text height: {txt_height:0.1f}mm')
+
+#%% Map text box centers to Z-heights
+# At this point we're done with the version of the STL that was scaled
+# for real elevations.  We'll load the version of the STL we just created with 
+# another package that supports ray tracing so that we can find text locations.
+mesh = trimesh.load(fn_stl_model)
+
+# Size the ray direction matrix for number of text labels
+ray_z = np.array([[0,0,1]])
+
+# Z-mapping is a slow operation with large STL files. 
+# Do point-by-point so we can provide status updates
+print(f'Calculating {lbl_cnt} contour elevation labels to Z-heights (slow operation)')
+idx_tri = np.zeros(lbl_cnt)
+for idx, ctr in enumerate(lbl_ctr):
+    print(f'  Mapping label {idx+1} of {lbl_cnt}...',end='',flush=True)
+    origin = np.array([[float(ctr[0]),float(ctr[1]),0]])
+
+    locations, _, idx_tri[idx] = mesh.ray.intersects_location(ray_origins=origin,
+                                                               ray_directions=ray_z)
+    lbl_ctr[idx] = locations                                                            
+    print('done',flush=True)                                                               
+
+#%% Rotate text labels to map to surface normal
 # * Text needs to be rotated in 3D to be normal to surface so that it doesn't go in and out of focus
 # ** Find the triange from the STL that contains the text center point.
 # ** Get the normal vector for the triangle
