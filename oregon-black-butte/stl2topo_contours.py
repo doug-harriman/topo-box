@@ -194,6 +194,36 @@ for idx, center in enumerate(lbl_ctr):
 # * Text needs to be rotated in 3D to be normal to surface so that it doesn't go in and out of focus
 lbl_norm = mesh.face_normals[idx_tri]
 
+#%% Rotation matrix to go from one vector to another
+def RotationV1V2(a:np.array,b:np.array):
+    """
+    Computes rotation matrix to go from one 3D vector to another.
+    Per: https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+    """
+
+    # Checks
+    if not isinstance(a,np.ndarray):
+        raise TypeError("vector a must be a 3D array.")
+
+    if not isinstance(b,np.ndarray):
+        raise TypeError("vector b must be a 3D array.")
+
+    if (len(a) != 3) or (len(b) != 3):
+        raise TypeError("a and b must be of length 3.")
+
+    # Force unit vectors
+    a = a / np.linalg.norm(a)
+    b = b / np.linalg.norm(b)
+
+    v = np.cross(a, b) 
+    s = np.linalg.norm(v) 
+    c = np.dot(a, b) 
+    vx = np.array([[0, -v[2], v[1]], [v[2], 0, -v[0]], [-v[1], v[0], 0]]) 
+    r = np.eye(3) + vx + np.dot(vx,vx) * (1-c)/(s**2)
+
+    return r
+
+
 #%%
 # Create text label G-Code (created in XY plane)
 gcu = gcode_utils.GcodeUtils()
@@ -212,19 +242,20 @@ for idx,label in enumerate(lbl_txt):
 
     # Position G-Code text via G-Code Utilities
     gcu.gcode = doc.code
-    gcu.header = f'\n; Contour Label: {label}'
     gcu.TranslateCenter()
 
-    # Rotate
+    # Rotate text to be normal to surface at center of text box.
+    R = RotationV1V2(ray_z[0],lbl_norm[idx])
+    gcu.Rotate(R)
 
     # Translate
     gcu.Translate(xyz=lbl_ctr[idx])
+    label_gcode += f'\n; Contour Label: {label}\n'
     label_gcode += gcu.gcode
 
 # ** Set the text plane normal to the triangle normal
 
 # 3D rotation matrix to align one vector to another
-# https://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
 # * Text is generated with a Z unit normal.
 # * Find the center of the contour label text box in XY.
 # * Find the triangle in the mesh which encloses the label center.
