@@ -1,10 +1,17 @@
-#%%
+#%% Temporary hack to add tools
+import sys
+sys.path.append('C:\\src\\3018\\gcode-utilities')
+
+#%% Imports
 import re
 import matplotlib.pyplot as plt
 import numpy as np
 from pint import Quantity as Q
 from stl import mesh  # https://github.com/WoLpH/numpy-stl/
 import trimesh
+import gcode_utils
+import gcode_doc as gcdoc
+
 
 # TODO: XY size should take a max X and a max Y, then figure out how to fit it.
 # TODO: Collect all input variables at the top.
@@ -171,11 +178,11 @@ ray_z = np.array([[0,0,1]])
 
 # Z-mapping is a slow operation with large STL files. 
 # Do point-by-point so we can provide status updates
-print(f'Calculating {lbl_cnt} contour elevation labels to Z-heights (slow operation)')
+print(f'Calculating {lbl_cnt} contour elevation labels Z-heights (slow operation)')
 idx_tri = np.zeros(lbl_cnt,dtype=int)
-for idx, ctr in enumerate(lbl_ctr):
+for idx, center in enumerate(lbl_ctr):
     print(f'  Mapping label {idx+1} of {lbl_cnt}...',end='',flush=True)
-    origin = np.array([[float(ctr[0]),float(ctr[1]),0]])
+    origin = np.array([[float(center[0]),float(center[1]),0]])
 
     locations, _, idx_tri[idx] = mesh.ray.intersects_location(ray_origins=origin,
                                                                ray_directions=ray_z)
@@ -186,7 +193,26 @@ for idx, ctr in enumerate(lbl_ctr):
 # * Text needs to be rotated in 3D to be normal to surface so that it doesn't go in and out of focus
 lbl_norm = mesh.face_normals[idx_tri]
 
+#%%
 # Create text label G-Code (created in XY plane)
+gcu = gcode_utils.GcodeUtils()
+label_gcode = ''
+for idx,label in enumerate(lbl_txt):
+    # Generate label text GCode via gcode_doc
+    doc  = gcdoc.Doc(job_control=False)  # Container object for generating G-Code
+    gtxt = gcdoc.Text(text=label,size_mm=txt_height,rotation_deg=lbl_rot[idx])
+    doc.layout.AddChild(gtxt)
+    doc.GCode()
+
+    # Position G-Code text via G-Code Utilities
+    gcu.gcode = doc.code
+    gcu.TranslateCenter()
+
+    # Rotate
+
+    # Translate
+    gcu.Translate(xyz=lbl_ctr[idx])
+    label_gcode += gcu.gcode
 
 # ** Set the text plane normal to the triangle normal
 
@@ -256,6 +282,8 @@ G21  (Units = millimeters)
             # Laser off at end of segment
             gcode += 'M5        ;Laser off' + '\n'
 
+    gcode += label_gcode
+
     gcode += 'M2  ; Job Complete'
 
     return gcode
@@ -264,3 +292,5 @@ gcode = Contour2Gcode(ctr,size_z=model_size_z_max)
 fn_ctr = 'topo_contours.nc'
 with open(fn_ctr,'w') as fp:
     fp.write(gcode)
+
+# %%
