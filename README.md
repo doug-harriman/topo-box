@@ -52,8 +52,8 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/?trlat=44.429197180580594&trlon=-121.59384723130317&bllat=44.3616143717882&bllon=-121.68289944838435&DEM_name=USGS/NED&tilewidth=100&printres=0.2&ntilesx=1&ntilesy=1&DEMresolution=14.19&basethick=1&zscale=-25.4&fileformat=STLb&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.38402186929164&map_lon=-121.65242965263509&map_zoom=13) model.
 
 # Fabrication Steps
-1. Download STL model from TouchTerrain.
-2. Capture all output data from TouchTerrain.
+1. Download zip file from TouchTerrain.
+2. Unzip.
 3. Determine model maximum sizes based on material & tool limits.
 4. Mill bottom side of model flat.
 5. Cut model/box outline.
@@ -63,7 +63,7 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 9. Generate topographic model tool paths.
 10. Mill topo model surface.
 11. Finish sand top surface.
-12. Generate contour line laser paths.
+12. Generate contour line laser paths with stl2topo_contours.py
 13. Generate additional artwork SVG (such as roads, compass rose, etc.)
 14. Project artwork SVG to surface in Fusion360.
 15. Generate artwork laser paths in Fusion360.
