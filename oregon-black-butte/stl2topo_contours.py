@@ -27,7 +27,7 @@ elevation_units   = 'ft'  # Elevation contour units.
 contour_delta     = 500   # Main elevation steps.
 contour_delta_min = 100   # Initial elevation level above base if not on a main elevation step.
 
-fontsize = 7  # Font size for contour labels
+fontsize = 6  # Font size for contour labels
 
 #%% Read in data from log file
 fn_log = 'logfile.txt'
@@ -154,7 +154,8 @@ inv      = ax.transData.inverted()
 lbl_cnt = len(ctr.labelTextsList)
 lbl_txt = [x.get_text() for x in ctr.labelTextsList]
 lbl_rot = [x.get_rotation() for x in ctr.labelTextsList]
-lbl_ctr = [np.array([x._x,x._y,0]) for x in ctr.labelTextsList]
+lbl_ctr = [(x._x,x._y,0) for x in ctr.labelTextsList]
+lbl_ctr = np.array(lbl_ctr)
 
 # Get the text bounding box.  Note that if the text is rotated, the BB 
 # fits the diagonal text.  BB extents do not provide info on text height.
@@ -206,6 +207,7 @@ for idx,label in enumerate(lbl_txt):
 
     # Position G-Code text via G-Code Utilities
     gcu.gcode = doc.code
+    gcu.header = f'\n; Contour Label: {label}'
     gcu.TranslateCenter()
 
     # Rotate
