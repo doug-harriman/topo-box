@@ -199,9 +199,14 @@ lbl_norm = mesh.face_normals[idx_tri]
 gcu = gcode_utils.GcodeUtils()
 label_gcode = ''
 for idx,label in enumerate(lbl_txt):
+    # Rotate text 180 degrees if Y normal component is "north"
+    rot = lbl_rot[idx]
+    if lbl_norm[idx][1] > 0:
+        rot += 180
+
     # Generate label text GCode via gcode_doc
     doc  = gcdoc.Doc(job_control=False)  # Container object for generating G-Code
-    gtxt = gcdoc.Text(text=label,size_mm=txt_height,rotation_deg=lbl_rot[idx])
+    gtxt = gcdoc.Text(text=label,size_mm=txt_height,rotation_deg=rot)
     doc.layout.AddChild(gtxt)
     doc.GCode()
 
