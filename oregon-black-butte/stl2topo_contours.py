@@ -13,7 +13,6 @@ import gcode_utils
 import gcode_doc as gcdoc
 
 
-# TODO: XY size should take a max X and a max Y, then figure out how to fit it.
 # TODO: Collect all input variables at the top.
 # TODO: Support YAML or basic text config file input.
 
@@ -27,7 +26,7 @@ elevation_units   = 'ft'  # Elevation contour units.
 contour_delta     = 500   # Main elevation steps.
 contour_delta_min = 100   # Initial elevation level above base if not on a main elevation step.
 
-fontsize = 6  # Font size for contour labels
+fontsize = 4  # Font size for contour labels
 
 #%% Read in data from log file
 fn_log = 'logfile.txt'
@@ -93,10 +92,6 @@ print(f'  Low  : {el_low:0.0f}')
 print(f'  High : {el_high:0.0f}')
 print(f'  Range: {el_range:0.0f}')
 
-# TODO: Account for STL base thickness
-# * Shift down by base thickness.  Topo 0 elevation should be at 0 now.
-# * Apply scaling.  Base thickness will be scaled, but will be negative.
-#   
 m.z *= el_range / m.z.max()  # Scale for correct elevations.
 m.z += el_low                # Offset for base elevation.
 
@@ -143,7 +138,6 @@ cl = ax.clabel(ctr, ctr.levels,  fontsize=fontsize, fmt='%d',inline=True)
 
 
 #%% Query text locations and size
-# TODO: Text conversion.  Note that contours do have gaps for text.
 # TODO: Create a heuristic for font size based on model size.  Set the plot size?
 # TODO: If plot figure size is set to model XY size, and axis fills figure, then can get direct scaling.
 # See: https://stackoverflow.com/questions/5320205/matplotlib-text-dimensions
