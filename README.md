@@ -50,6 +50,10 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 
 # Oregon, Black Butte
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/?trlat=44.429197180580594&trlon=-121.59384723130317&bllat=44.3616143717882&bllon=-121.68289944838435&DEM_name=USGS/NED&tilewidth=100&printres=0.2&ntilesx=1&ntilesy=1&DEMresolution=14.19&basethick=1&zscale=-25.4&fileformat=STLb&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.38402186929164&map_lon=-121.65242965263509&map_zoom=13) model.
+* Artwork
+  * URL [QR Code Generator](https://qrd.by/qr-code-generator-svg)
+  * [Oregon Map Outline](https://commons.wikimedia.org/wiki/File:Blank_US_Map_(states_only).svg) extracted from a US map.
+  * [Black Butted Info](https://en.wikipedia.org/wiki/Black_Butte_(Oregon))
 
 # Fabrication Steps
 1. Download zip file from TouchTerrain.
@@ -61,10 +65,11 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 6. Generate any bottom side artwork.
 8. Laser etch bottom side.
 9. Generate topographic model tool paths.
-10. Mill topo model surface.
-11. Finish sand top surface.
-12. Generate contour line laser paths with stl2topo_contours.py
-13. Generate additional artwork SVG (such as roads, compass rose, etc.)
-14. Project artwork SVG to surface in Fusion360.
-15. Generate artwork laser paths in Fusion360.
-16. Laser etch topside.
+10. TouchTerrain models are high fidelty.  As such, there may be too many polygons for Fusion360 to handle.  See [this article](https://toglefritz.com/convert-a-complex-stl-into-a-body-in-fusion-360/) for tips on how to reduce the model polygon count. 
+11. Mill topo model surface.
+12. Finish sand top surface.
+13. Generate contour line laser paths with stl2topo_contours.py
+14. Generate additional artwork SVG (such as roads, compass rose, etc.)
+15. Project artwork SVG to surface in Fusion360.
+16. Generate artwork laser paths in Fusion360.
+17. Laser etch topside.
