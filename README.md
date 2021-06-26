@@ -54,6 +54,8 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
   * URL [QR Code Generator](https://qrd.by/qr-code-generator-svg) for a QR code that points to this repository.
   * [Oregon Map Outline](https://commons.wikimedia.org/wiki/File:Blank_US_Map_(states_only).svg) extracted from a US map.
   * [Black Butted Info](https://en.wikipedia.org/wiki/Black_Butte_(Oregon))
+  * [US Highway 20 Sign](https://commons.wikimedia.org/wiki/File:US_Route_20_in_Illinois_Road_Sign.svg).  Reworked in Inkscape.
+  * [Black Butte Ranch Logo](https://www.blackbutteranchhoa.com/images/logo.png), autotraced and cropped in Inkscape.
 
 # Fabrication Steps
 1. Download zip file from TouchTerrain.
