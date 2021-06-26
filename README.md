@@ -10,7 +10,7 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 * [stl2topo_contours.py](oregon-black-butte/stl2topo_contours.py)
   * Custom developed script that takes STL and additional data, and creates topographic elevation contour lines.
   * Contour lines are converted into 3D laser paths for etching into the model.
-* [Open Street Map](openstreetmap.org)
+* [Open Street Map](https://openstreetmap.org)
   * Provides SVG street map data that can be converted to laser paths with [InkScape](https://inkscape.org/), see: https://github.com/doug-harriman/3018-Mill#laser
   * Maps can take latitude and longitude data from TouchTerrain output so that map outline exactly matches STL outline.
   * Note that street maps contain a lot of data an need significant cleanup before generating laser paths. 
