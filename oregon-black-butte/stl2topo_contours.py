@@ -18,9 +18,15 @@ import gcode_doc as gcdoc
 
 #%% Configuration values
 # Model material limits
-model_size_z_max =  25  # Topology will be scaled to this value.  Base will be extra.
-model_size_x_max =  75  # Scale max X dimension.
-model_size_y_max =  75  # Scale max Y dimension.
+board_thickness = 19.1
+planing = 0.5 # per side
+base_thickness = 2
+model_size_z_max =  board_thickness  # Topology will be scaled to this value.  Base will be extra.
+model_size_z_max -= base_thickness
+model_size_z_max -= planing * 2
+
+model_size_x_max =  85  # Scale max X dimension.
+model_size_y_max =  85  # Scale max Y dimension.
 
 elevation_units   = 'ft'  # Elevation contour units.
 contour_delta     = 500   # Main elevation steps.
