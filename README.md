@@ -52,7 +52,7 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/?trlat=44.429197180580594&trlon=-121.59384723130317&bllat=44.3616143717882&bllon=-121.68289944838435&DEM_name=USGS/NED&tilewidth=100&printres=0.2&ntilesx=1&ntilesy=1&DEMresolution=14.19&basethick=1&zscale=-25.4&fileformat=STLb&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.38402186929164&map_lon=-121.65242965263509&map_zoom=13) model.
 * Artwork
   * URL [QR Code Generator](https://qrd.by/qr-code-generator-svg)
-  * [Oregon Map Outline](https://commons.wikimedia.org/wiki/File:Blank_Map_of_Oregon.svg)
+  * [Oregon Map Outline](https://freevectormaps.com/united-states/oregon/US-OR-EPS-01-0001?ref=atr) from Free Vector Maps.
   * [Black Butted Info](https://en.wikipedia.org/wiki/Black_Butte_(Oregon))
 
 # Fabrication Steps
