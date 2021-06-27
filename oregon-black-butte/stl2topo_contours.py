@@ -253,21 +253,6 @@ for idx,label in enumerate(lbl_txt):
     label_gcode += f'\n; Contour Label: {label}\n'
     label_gcode += gcu.gcode
 
-# ** Set the text plane normal to the triangle normal
-
-# 3D rotation matrix to align one vector to another
-# * Text is generated with a Z unit normal.
-# * Find the center of the contour label text box in XY.
-# * Find the triangle in the mesh which encloses the label center.
-# * Determine the text label center Z-height from that triangle info.
-# * Get the triangle unit normal.
-# * Generate the label text G-code
-# * Translate the label gc to the origin.
-# * Calculate the rotation matrix.
-# * Rotate the G-Code
-# * Translate the G-code
-# * Write to file.
-
 #%% Generate Contour G-Code
 def Contour2Gcode(ctr,size_z:float=1):
     '''
