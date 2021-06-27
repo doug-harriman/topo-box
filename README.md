@@ -10,7 +10,7 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 * [stl2topo_contours.py](oregon-black-butte/stl2topo_contours.py)
   * Custom developed script that takes STL and additional data, and creates topographic elevation contour lines.
   * Contour lines are converted into 3D laser paths for etching into the model.
-* [Open Street Map](openstreetmap.org)
+* [Open Street Map](https://openstreetmap.org)
   * Provides SVG street map data that can be converted to laser paths with [InkScape](https://inkscape.org/), see: https://github.com/doug-harriman/3018-Mill#laser
   * Maps can take latitude and longitude data from TouchTerrain output so that map outline exactly matches STL outline.
   * Note that street maps contain a lot of data an need significant cleanup before generating laser paths. 
@@ -51,9 +51,11 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 # Oregon, Black Butte
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/?trlat=44.429197180580594&trlon=-121.59384723130317&bllat=44.3616143717882&bllon=-121.68289944838435&DEM_name=USGS/NED&tilewidth=100&printres=0.2&ntilesx=1&ntilesy=1&DEMresolution=14.19&basethick=1&zscale=-25.4&fileformat=STLb&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.38402186929164&map_lon=-121.65242965263509&map_zoom=13) model.
 * Artwork
-  * URL [QR Code Generator](https://qrd.by/qr-code-generator-svg)
+  * URL [QR Code Generator](https://qrd.by/qr-code-generator-svg) for a QR code that points to this repository.
   * [Oregon Map Outline](https://commons.wikimedia.org/wiki/File:Blank_US_Map_(states_only).svg) extracted from a US map.
   * [Black Butted Info](https://en.wikipedia.org/wiki/Black_Butte_(Oregon))
+  * [US Highway 20 Sign](https://commons.wikimedia.org/wiki/File:US_Route_20_in_Illinois_Road_Sign.svg).  Reworked in Inkscape.
+  * [Black Butte Ranch Logo](https://www.blackbutteranchhoa.com/images/logo.png), autotraced and cropped in Inkscape.
 
 # Fabrication Steps
 1. Download zip file from TouchTerrain.
