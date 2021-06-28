@@ -25,7 +25,7 @@ from svg_to_gcode.svg_parser import parse_file
 from svg_to_gcode.compiler import Compiler, interfaces
 
 # Loosen tolerances to reduce point count.  
-stg.TOLERANCES['approximation'] = 1
+stg.TOLERANCES['approximation'] = .05
 
 # Instantiate a compiler, specifying the interface type and the speed at which the tool should move. pass_depth controls
 # how far down the tool moves after every pass. Set it to 0 if your machine does not support Z axis movement.
@@ -90,18 +90,3 @@ def CalcZHeight(m):
 
 gcu.gcode = re_xy.sub(CalcZHeight,gcu.gcode)#,count=20)
 gcu.SaveAs(gcu.filename + '-updated.nc')
-
-
-#%% 
-# Z-mapping is a slow operation with large STL files. 
-# Do point-by-point so we can provide status updates
-print(f'Calculating {lbl_cnt} contour elevation labels Z-heights (slow operation)')
-idx_tri = np.zeros(lbl_cnt,dtype=int)
-for idx, center in enumerate(lbl_ctr):
-    print(f'  Mapping label {idx+1} of {lbl_cnt}...',end='',flush=True)
-    origin = np.array([[float(center[0]),float(center[1]),0]])
-
-    locations, _, idx_tri[idx] = mesh.ray.intersects_location(ray_origins=origin,
-                                                               ray_directions=ray_z)
-    lbl_ctr[idx] = locations                                                            
-    print('done',flush=True)                                                               
