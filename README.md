@@ -56,9 +56,9 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 
 ## Prototype #1
 
-|Elevation Contours, Roads & Trail| Bottom Artwork|
-|:---:|:---:|
-|<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-proto-1-top.jpg" height="300">|<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-proto-1-bottom.jpg" height="300">|
+|Elevation Contours, Roads & Trail|Close Up|Bottom Artwork|
+|:---:|:---:|:---:|
+|<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-proto-1-top.jpg" width="300" height="225">| <img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-proto-1-top-closeup.jpg" wdith="300" height="225"> |<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-proto-1-bottom.jpg" width="258" height="225">|
 
 ## Model Files
 
