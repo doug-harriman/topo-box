@@ -30,8 +30,8 @@ stg.TOLERANCES['approximation'] = .05
 # Instantiate a compiler, specifying the interface type and the speed at which the tool should move. pass_depth controls
 # how far down the tool moves after every pass. Set it to 0 if your machine does not support Z axis movement.
 gcode_compiler = stg.compiler.Compiler(stg.compiler.interfaces.Gcode, 
-                                       movement_speed=1000, 
-                                       cutting_speed=300, 
+                                       movement_speed=1500, 
+                                       cutting_speed=800, 
                                        custom_header=['G90','G21','M5'],
                                        pass_depth=0)
 
