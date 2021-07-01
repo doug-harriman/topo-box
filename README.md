@@ -54,12 +54,13 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 
 # Oregon, Black Butte
 
-Prototype #1
+## Prototype #1
 
 |Elevation Contours, Roads & Trail| Bottom Artwork|
 |:---:|:---:|
 |<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-proto-1-top.jpg" height="300">|<img src="https://github.com/doug-harriman/topo-box/blob/main/oregon-black-butte/images/black-butte-proto-1-bottom.jpg" height="300">|
 
+## Model Files
 
 * [TouchTerrain](https://touchterrain.geol.iastate.edu/?trlat=44.429197180580594&trlon=-121.59384723130317&bllat=44.3616143717882&bllon=-121.68289944838435&DEM_name=USGS/NED&tilewidth=100&printres=0.2&ntilesx=1&ntilesy=1&DEMresolution=14.19&basethick=1&zscale=-25.4&fileformat=STLb&maptype=roadmap&gamma=1&transp=20&hsazi=315&hselev=45&map_lat=44.38402186929164&map_lon=-121.65242965263509&map_zoom=13) model.
 * Artwork
@@ -68,6 +69,27 @@ Prototype #1
   * [Black Butted Info](https://en.wikipedia.org/wiki/Black_Butte_(Oregon))
   * [US Highway 20 Sign](https://commons.wikimedia.org/wiki/File:US_Route_20_in_Illinois_Road_Sign.svg).  Reworked in Inkscape.
   * [Black Butte Ranch Logo](https://www.blackbutteranchhoa.com/images/logo.png), autotraced and cropped in Inkscape.
+
+## Learnings
+
+### The Good
+- Text alignment to surfaces
+- Overall Z mapping of 2D profiles is good.
+
+### The Bad
+- Maybe skip BBR stuff entirely
+  - BBR Logo needs fixing, too rounded.
+  - BBR Text too small.
+- Maybe skip topo lines too.  Makes this one very busy
+  - For single stroke, the elevation text is at about the min. It's at 1.6 mm
+  - For double stroke, may need to go a bit larger
+- DLH Desings logo needs more space between text & border
+- 5000 ft elevation text right on top of trail parking lot, bad
+- Difficult to align laser to milled surface.  Topo lines are not even in Z
+  - Fixturing or fiducal to locate?
+- QR code is not good.  Probably need to do a rastered image at a lower power
+- Need to set laser speeds & power for in svg2topo.py
+- Need to set laser speeds & power for stl2topo_contours.py
 
 # Fabrication Steps
 1. Download zip file from TouchTerrain.
