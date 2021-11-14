@@ -15,6 +15,7 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
   * Maps can take latitude and longitude data from TouchTerrain output so that map outline exactly matches STL outline.
   * Note that street maps contain a lot of data an need significant cleanup before generating laser paths. 
 * [Fusion360](https://www.autodesk.com/products/fusion-360/) for modeling and CNC tool paths.
+* [MeshLab](https://www.meshlab.net/) to modify high vertex count STL files.
 
 ## Elevation Contour Generation Tool Process Overview
 * STL downloaded from TouchTerrain.
@@ -90,6 +91,19 @@ Small boxes with lids that are topographic reliefs.  The goal of this project re
 - QR code is not good.  Probably need to do a rastered image at a lower power
 - Need to set laser speeds & power for in svg2topo.py
 - Need to set laser speeds & power for stl2topo_contours.py
+
+# STL Model Simplification
+Performed in Meshlab.
+Meshlab
+* Measured STL bounding box: Filters -> Quality Mesures and Computation -> Compute Geometric Measures.  Data written to text output box, lower right.
+* Determine Z-scaling.
+	* Apply Z-scaling: Filters -> Normals, Curvature and Orientation -> Transform: Scale, Normalize
+	* Set Z scaling, deselect "Uniform Scaling"
+* Simplify Model
+	* Filters -> Remeshing, Simplifications and Reconstruction -> Simpilfication: Quadric Edge Collapse Decimation
+	* Percentage Reduction: 0.5
+	* Quality threshold: 0.8
+
 
 # Fabrication Steps
 1. Download zip file from TouchTerrain.
