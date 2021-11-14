@@ -38,7 +38,7 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.5044503"
+     inkscape:zoom="1.4035449"
      inkscape:cx="251.29946"
      inkscape:cy="203.01532"
      inkscape:document-units="mm"
@@ -48,7 +48,7 @@
      inkscape:snap-text-baseline="false"
      inkscape:window-width="1920"
      inkscape:window-height="1001"
-     inkscape:window-x="951"
+     inkscape:window-x="-9"
      inkscape:window-y="-9"
      inkscape:window-maximized="1"
      units="mm" />
@@ -60,7 +60,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -101,38 +101,38 @@
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;line-height:1.25;font-family:'OCR A Extended';-inkscape-font-specification:'OCR A Extended, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
-       x="35.379723"
-       y="59.206951"
+       x="35.002701"
+       y="73.242851"
        id="text2494"><tspan
          sodipodi:role="line"
-         x="35.379723"
-         y="59.206951"
+         x="35.002701"
+         y="73.242851"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:'OCR A Extended';-inkscape-font-specification:'OCR A Extended, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583"
          id="tspan2496">Latitude :  44° 23' 59&quot; N </tspan><tspan
          sodipodi:role="line"
-         x="35.379723"
-         y="61.852787"
+         x="35.002701"
+         y="75.888687"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.11667px;font-family:'OCR A Extended';-inkscape-font-specification:'OCR A Extended, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583"
          id="tspan2498">Longitude: 121° 38' 08&quot; W</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;line-height:1.25;font-family:'OCR A Extended';-inkscape-font-specification:'OCR A Extended, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="31.849916"
-       y="45.574448"
+       y="68.857803"
        id="text2494-3"><tspan
          sodipodi:role="line"
          id="tspan2492-2"
          x="31.849916"
-         y="45.574448"
+         y="68.857803"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:'OCR A Extended';-inkscape-font-specification:'OCR A Extended, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583">Peak Elevation: 6436 ft</tspan><tspan
          sodipodi:role="line"
          x="31.849916"
-         y="49.102222"
+         y="72.385582"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:2.82222px;font-family:'OCR A Extended';-inkscape-font-specification:'OCR A Extended, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583"
          id="tspan2498-0" /></text>
     <g
        id="g3749"
-       transform="matrix(2.8128531,0,0,2.8128531,98.690745,118.06843)"
+       transform="matrix(2.2502825,0,0,2.2502825,102.35177,115.409)"
        style="display:inline">
       <g
          id="g843"
@@ -169,19 +169,19 @@
          height="2.1375012"
          x="4.409936"
          y="-5.7960238"
-         ry="0.32918423"
-         rx="0.31238663" />
+         ry="0.41148028"
+         rx="0.39048329" />
     </g>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;line-height:1.25;font-family:'High Tower Text';-inkscape-font-specification:'High Tower Text, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.264583"
        x="25.624353"
-       y="41.23875"
+       y="63.463768"
        id="text2486"><tspan
          sodipodi:role="line"
          id="tspan2484"
          x="25.624353"
-         y="41.23875"
+         y="63.463768"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.5833px;font-family:'High Tower Text';-inkscape-font-specification:'High Tower Text, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:0.264583">Black Butte</tspan></text>
   </g>
 </svg>
